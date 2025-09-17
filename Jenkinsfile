@@ -42,9 +42,10 @@ pipeline {
             [ -f coverage/lcov.info ] || npm test -- --coverage --ci || true
 
             # Run analysis; project/org from sonar-project.properties, token via CLI
-            sonar-scanner -Dsonar.login="$SONAR_TOKEN"
+            sonar-scanner -Dsonar.login="$SONAR_TOKEN" -Dsonar.verbose=true | tee sonar-verbose.log
           '''
         }
+         archiveArtifacts artifacts: 'sonar-verbose.log', fingerprint: true, onlyIfSuccessful: false
       }
     }
 
