@@ -11,7 +11,7 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        sh 'npm ci || npm install --no-fund --no-audit'
+        sh 'npm install'
       }
     }
 
