@@ -28,12 +28,17 @@ pipeline {
  
     stage('SonarCloud Analysis') {
       steps {
-        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-          sh '''
-            echo "🔍 Running SonarCloud analysis..."
-            sonar-scanner \
-              -Dsonar.login=$SONAR_TOKEN
-          '''
+        script {
+          // Resolve the auto-installed scanner
+          def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+          // Inject SONAR_HOST_URL and SONAR_AUTH_TOKEN for "SonarCloud"
+          withSonarQubeEnv('SonarCloud') {
+            sh """
+              echo "🔍 Running SonarCloud analysis with scanner at: ${scannerHome}"
+              "${scannerHome}/bin/sonar-scanner" \
+                -Dsonar.login=${SONAR_AUTH_TOKEN}
+            """
+          }
         }
       }
     }
