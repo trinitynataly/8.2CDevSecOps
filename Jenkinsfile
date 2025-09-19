@@ -26,12 +26,16 @@ pipeline {
       }
     }
  
-    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+    stage('SonarCloud Analysis') {
+      steps {
+        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
           sh '''
             echo "🔍 Running SonarCloud analysis..."
             sonar-scanner \
               -Dsonar.login=$SONAR_TOKEN
           '''
         }
+      }
+    }
   }
 }
